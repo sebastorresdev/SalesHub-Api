@@ -6,7 +6,7 @@ public static class UserEndpoints
 {
     public static RouteGroupBuilder MapUserEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/Usuarios");
+        var group = routes.MapGroup("/Usuario");
 
         group.MapGet("/", async (IUserService _userService) =>
         {
@@ -21,7 +21,7 @@ public static class UserEndpoints
             }
         });
 
-        group.MapPost("/iniciarSesion", async (LoginDto loginDto, IUserService _userService) =>
+        group.MapPost("/IniciarSesion", async (LoginDto loginDto, IUserService _userService) =>
         {
             try
             {

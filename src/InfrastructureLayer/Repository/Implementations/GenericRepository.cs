@@ -1,5 +1,4 @@
-﻿
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using DomainLayer;
 using InfrastructureLayer.Data;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +25,7 @@ public class GenericRepository<TModel> : IGenericRepository<TModel> where TModel
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            Console.WriteLine($"Error aqui: {e.Message}");
             throw;
         }
     }

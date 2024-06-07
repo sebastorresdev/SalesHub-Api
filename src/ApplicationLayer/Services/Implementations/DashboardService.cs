@@ -2,7 +2,6 @@
 using System.Globalization;
 using DomainLayer.Models;
 using InfrastructureLayer;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ApplicationLayer;
 
@@ -29,29 +28,6 @@ public class DashboardService : IDashboardService
         lastDate = lastDate.Value.AddDays(-totalDays);
 
         return saleTable.Where(s => s.CreationDate != null && s.CreationDate.Value.Date >= lastDate.Value.Date);
-    }
-
-    public async Task<DashboardDto> Summary()
-    {
-        try
-        {
-            var totalSales = await TotalSalesLastWeek();
-            var totalIncome = await TotalIncomeLastWeek();
-            var totalProducts = await TotalProducts();
-
-            var WeeklySale = new List<WeeklySaleDto>();
-
-            foreach (var item in await SaleLastWeek())
-            {
-                WeeklySale.Add(new WeeklySaleDto(item.Key, item.Value));
-            }
-
-            return new DashboardDto(totalSales, totalIncome, totalProducts, WeeklySale);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error: {ex.Message}");
-        }
     }
 
     private async Task<int> TotalSalesLastWeek()
@@ -93,12 +69,36 @@ public class DashboardService : IDashboardService
         if (query.Any())
         {
             var saleTable = GetSales(query, 7);
-            result = saleTable.GroupBy(s => s.CreationDate != null ? s.CreationDate.Value.Date : DateTime.Now.Date)
+            result = saleTable.GroupBy(s => s.CreationDate != null ? s.CreationDate.Value.Date : DateTime.Now.Date) // verificar si toma encuenta la hora
                               .OrderBy(g => g.Key)
                               .Select(sd => new { date = sd.Key.ToString("dd/MM/yyyy"), total = sd.Count() })
                               .ToDictionary(r => r.date, r => r.total);
         }
 
         return result;
+    }
+
+    public async Task<DashboardDto> Summary()
+    {
+        try
+        {
+            // Mejorar esta llamada a los metodos asincronos
+            var totalSales = await TotalSalesLastWeek();
+            var totalIncome = await TotalIncomeLastWeek();
+            var totalProducts = await TotalProducts();
+
+            var WeeklySale = new List<WeeklySaleDto>();
+
+            foreach (var item in await SaleLastWeek())
+            {
+                WeeklySale.Add(new WeeklySaleDto(item.Key, item.Value));
+            }
+
+            return new DashboardDto(totalSales, totalIncome, totalProducts, WeeklySale);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error: {ex.Message}");
+        }
     }
 }

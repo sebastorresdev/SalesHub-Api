@@ -20,7 +20,6 @@ public class UserService : IUserService
         {
             var createUser = await _userRepository.Create(newUserDto.ToUserEntity());
             if (createUser.Id == 0) throw new TaskCanceledException("No se pudo crear el usuario");
-
             var userQuery = await _userRepository.GetAll(u => u.Id == createUser.Id);
 
             createUser = userQuery.Include(r => r.Rol).First();

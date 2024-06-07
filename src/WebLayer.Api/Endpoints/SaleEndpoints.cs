@@ -6,7 +6,7 @@ public static class SaleEndpoints
 {
     public static RouteGroupBuilder MapSaleEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/Venta");
+        var group = routes.MapGroup("/Ventas");
 
         group.MapGet("/Historial", async (
             ISaleService _saleService,
